@@ -30,27 +30,25 @@ public class MinPQ {
 
         // If the current node is not the smallest, swap it with the smallest child
         if (smallest != i) {
-            double tmp = this.heap[i].getPrio();
-            this.heap[i].setPrio(this.heap[smallest].getPrio());
-            this.heap[smallest].setPrio(tmp);
+            PQElement tmp = this.heap[i];
+            this.heap[i] = this.heap[smallest];
+            this.heap[smallest] = tmp;
             // Recursively heapify the subtree rooted at the smallest child
             minHeapify(smallest, n);
         }
     }
 
     public boolean isEmpty() {
-        if (this.heap == null) {
-            return true;
-        }
-        return false;
+        return this.currentsize == 0;
     }
 
     // Referenz: https://www.geeksforgeeks.org/introduction-to-min-heap-data-structure/?ref=gcse_outind (08.04.2025)
     public boolean insert(String d, double p) {
         PQElement e = new PQElement(d, p);
-        if (this.currentsize + 1 < this.maxsize) {
-            this.heap[++this.currentsize] = e;
+        if (this.currentsize < this.maxsize) {
+            this.heap[this.currentsize] = e;
             int index = this.currentsize;
+            this.currentsize++;
 
             // Compare the new element with its parent and swap if necessary
             while (index > 0 && this.heap[(index - 1) / 2].getPrio() > heap[index].getPrio()) {
@@ -64,63 +62,43 @@ public class MinPQ {
         return false;
     }
 
-    // Function to delete a node from the min-heap
-    public static void deleteMinHeap(List<Integer> heap,
-                                     int value)
-    {
-        // Find the index of the element to be deleted
-        int index = -1;
-        for (int i = 0; i < heap.size(); i++) {
-            if (heap.get(i) == value) {
-                index = i;
-                break;
-            }
-        }
-        // If the element is not found, return
-        if (index == -1) {
-            return;
-        }
-        // Replace the element to be deleted with the last
-        // element
-        heap.set(index, heap.get(heap.size() - 1));
-        // Remove the last element
-        heap.remove(heap.size() - 1);
-        // Heapify the tree starting from the element at the
-        // deleted index
-        while (true) {
-            int leftChild = 2 * index + 1;
-            int rightChild = 2 * index + 2;
-            int smallest = index;
-            if (leftChild < heap.size()
-                    && heap.get(leftChild)
-                    < heap.get(smallest)) {
-                smallest = leftChild;
-            }
-            if (rightChild < heap.size()
-                    && heap.get(rightChild)
-                    < heap.get(smallest)) {
-                smallest = rightChild;
-            }
-            if (smallest != index) {
-                Collections.swap(heap, index, smallest);
-                index = smallest;
-            }
-            else {
-                break;
-            }
-        }
-    }
-
     public PQElement extractElement() {
-        if (!isEmpty()) {
-
+        if (isEmpty()) {
+            return null;
         }
+        // Wurzel (erstes Element (geringste Prio) in dem MinHeap) speichern
+        PQElement min = this.heap[0];
+        this.heap[0] = this.heap[this.currentsize - 1]; // Element mit höchster Prio an Wurzelstelle schieben
+        this.heap[this.currentsize - 1] = null;
+        currentsize--;
+
+        minHeapify(0, this.currentsize);
+        return min;
     }
 
     public String extractData() {
+        if (isEmpty()) {
+            return null;
+        }
+        PQElement data = extractElement();
+        return data.getData();
     }
 
     public void update(String s, double n) {
+        for (int i = 0; i < this.currentsize; i++) {
+           if (this.heap[i].getData().equals(s)) {
+               if (this.heap[i].getPrio() > n) {
+                   this.heap[i].setPrio(n);
+               }
+               // Bubble Up - Element mit neuer Priorität muss Richtung Wurzel wandern
+               int index = i;
+               while (index > 0 && this.heap[(index - 1) / 2].getPrio() > heap[index].getPrio()) {
+                   tauschen(index, (index - 1) / 2);
+                   // Move up the tree to the parent of the current element
+                   index = (index - 1) / 2;
+               }
+           }
+        }
     }
 
     private void tauschen(int i, int j) {

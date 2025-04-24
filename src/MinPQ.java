@@ -59,6 +59,7 @@ public class MinPQ {
 
             return true;
         }
+        System.out.println("Queue ist voll!");
         return false;
     }
 
@@ -66,7 +67,7 @@ public class MinPQ {
         if (isEmpty()) {
             return null;
         }
-        // Wurzel (erstes Element (geringste Prio) in dem MinHeap) speichern
+        // Wurzel (erstes Element (geringste Prio) aus dem MinHeap) speichern
         PQElement min = this.heap[0];
         this.heap[0] = this.heap[this.currentsize - 1]; // Element mit höchster Prio an Wurzelstelle schieben
         this.heap[this.currentsize - 1] = null;

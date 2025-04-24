@@ -10,14 +10,14 @@ public class Main {
     public static void main(String[] args)
         throws IOException
     {
-        int N = 10;
+        int N = 35;
         System.out.println("Arbeitsverzeichnis: " + new File(".").getAbsolutePath());
         String fileName = "reisendat.sec";
 
         // Code für Einlesen: https://www.geeksforgeeks.org/read-file-into-an-array-in-java/ (24.04.2025)
         // list that holds strings of a file
         List<PQElement> listOfPQElements
-                = new ArrayList<PQElement>();
+                = new ArrayList<>();
 
         // load data from file
         BufferedReader bf = new BufferedReader(
@@ -43,13 +43,12 @@ public class Main {
         for (PQElement e : array) {
             pq.insert(e.getData(), e.getPrio());
         }
-        pq.minHeapify(0, array.length - 1);
 
         // N günstigste Reisen ausgeben
         System.out.println("Die " + N + " günstigsten Reisen:");
         for (int i = 0; i < N && !pq.isEmpty(); i++) {
             PQElement reise = pq.extractElement();
-            System.out.println((i + 1) + ". " + reise);
+            System.out.println((i + 1) + ". " + reise.getData() + " " + reise.getPrio());
         }
     }
 }

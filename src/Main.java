@@ -5,12 +5,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Main {
     public static void main(String[] args)
         throws IOException
     {
-        int N = 35;
+        int n = 80;
         System.out.println("Arbeitsverzeichnis: " + new File(".").getAbsolutePath());
         String fileName = "reisendat.sec";
 
@@ -45,10 +46,27 @@ public class Main {
         }
 
         // N günstigste Reisen ausgeben
-        System.out.println("Die " + N + " günstigsten Reisen:");
-        for (int i = 0; i < N && !pq.isEmpty(); i++) {
+        List<PQElement> output = new ArrayList<>();
+        for (int i = 0; i < array.length && !pq.isEmpty(); i++) {
             PQElement reise = pq.extractElement();
-            System.out.println((i + 1) + ". " + reise.getData() + " " + reise.getPrio());
+            output.add(reise);
+            for (int j = 0; j < output.size(); j++) {
+                if (Objects.equals(output.get(j).getData(), reise.getData()) && output.get(j).getPrio() < reise.getPrio()) {
+                    output.remove(reise);
+                }
+            }
+        }
+        if (n < output.size()) {
+            System.out.println("Die " + n + " günstigsten Reisen:");
+            for (int i = 0; i < n; i++) {
+                System.out.println((i + 1) + ". " + output.get(i).getData() + " " + output.get(i).getPrio());
+            }
+        } else {
+            System.out.println("Info: Es gibt nur " + output.size() + " Reiseziele");
+            System.out.println("Die " + output.size() + " günstigsten Reisen:");
+            for (int i = 0; i < output.size(); i++) {
+                System.out.println((i + 1) + ". " + output.get(i).getData() + " " + output.get(i).getPrio());
+            }
         }
     }
 }
